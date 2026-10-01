@@ -16,6 +16,12 @@ import { detectDuplicatesAndSimilar } from '@/features/intelligence/similarityDe
 import { PromptQualityModal } from '@/components/intelligence/PromptQualityModal';
 import { VersionHistoryModal } from '@/components/versioning/VersionHistoryModal';
 import { DuplicateBanner } from '@/components/intelligence/DuplicateBanner';
+import { VariablePromptModal } from '@/components/prompts/VariablePromptModal';
+import { PromptEnhancerModal } from '@/components/intelligence/PromptEnhancerModal';
+import { ShareablePromptCardModal } from '@/components/prompts/ShareablePromptCardModal';
+import { TokenMetricsBadge } from '@/components/prompts/TokenMetricsBadge';
+import { AIPlatformLauncher } from '@/components/prompts/AIPlatformLauncher';
+import { hasVariables } from '@/lib/variables';
 import {
   Copy,
   Check,
@@ -30,6 +36,9 @@ import {
   ShieldCheck,
   History,
   GitCompare,
+  Wand2,
+  Sliders,
+  Share2,
 } from 'lucide-react';
 
 export default function PromptDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -51,8 +60,16 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [qualityOpen, setQualityOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [variableOpen, setVariableOpen] = useState(false);
+  const [enhancerOpen, setEnhancerOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   const prompt = prompts.find((p) => p.id === id);
+
+  const hasPromptVariables = useMemo(
+    () => (prompt ? hasVariables(prompt.content) : false),
+    [prompt],
+  );
 
   const qualityAnalysis = useMemo(
     () => (prompt ? analyzePromptQuality(prompt.content) : null),
@@ -181,6 +198,37 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
           {copied ? 'Copied!' : 'Copy Prompt'}
         </Button>
 
+        {/* Dynamic Variable Filler */}
+        {hasPromptVariables && (
+          <Button
+            variant="outline"
+            onClick={() => setVariableOpen(true)}
+            icon={<Sliders className="w-4 h-4 text-amber-600" />}
+            className="border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300"
+          >
+            Fill Variables & Run
+          </Button>
+        )}
+
+        {/* AI Enhancer / Refiner */}
+        <Button
+          variant="outline"
+          onClick={() => setEnhancerOpen(true)}
+          icon={<Wand2 className="w-4 h-4 text-purple-600" />}
+          className="border-purple-500/30 hover:bg-purple-500/5 text-purple-700 dark:text-purple-300"
+        >
+          AI Enhancer
+        </Button>
+
+        {/* Shareable Card Generator */}
+        <Button
+          variant="outline"
+          onClick={() => setShareOpen(true)}
+          icon={<Share2 className="w-4 h-4 text-blue-600" />}
+        >
+          Share Card
+        </Button>
+
         <Button
           variant="outline"
           onClick={() => setHistoryOpen(true)}
@@ -194,7 +242,7 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
           onClick={() => setQualityOpen(true)}
           icon={<ShieldCheck className="w-4 h-4 text-emerald-600" />}
         >
-          Quality Analysis
+          Quality
         </Button>
 
         <Button
@@ -227,6 +275,17 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
         </Button>
       </div>
 
+      {/* Direct AI Platform Launchers */}
+      <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
+        <AIPlatformLauncher
+          promptId={prompt.id}
+          getContent={() => prompt.content}
+        />
+        <div className="text-[11px] text-[var(--color-text-tertiary)] hidden sm:block">
+          Copies prompt and opens chat interface in a new tab
+        </div>
+      </div>
+
       {/* Similar Prompt Notice if detected */}
       {similarityResult && similarityResult.similarPrompts.length > 0 && (
         <DuplicateBanner
@@ -234,6 +293,12 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
           similarPrompts={similarityResult.similarPrompts}
         />
       )}
+
+      {/* Token Metrics & Cost Breakdown */}
+      <TokenMetricsBadge
+        content={prompt.content}
+        showCostDetails={true}
+      />
 
       {/* Prompt Content */}
       <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6">
@@ -253,7 +318,10 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
             {copied ? '✓ Copied' : 'Copy'}
           </button>
         </div>
-        <div className="prompt-content text-[var(--color-text)] whitespace-pre-wrap font-mono text-sm leading-relaxed">
+        <div
+          dir="auto"
+          className="prompt-content text-[var(--color-text)] whitespace-pre-wrap font-mono text-sm leading-relaxed"
+        >
           {prompt.content}
         </div>
       </div>
@@ -360,6 +428,33 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
         onRestoreVersion={handleRestoreVersion}
         onCreateNewVersion={handleCreateNewVersion}
       />
+
+      {/* Interactive Variable Fill Modal */}
+      {variableOpen && (
+        <VariablePromptModal
+          isOpen={variableOpen}
+          onClose={() => setVariableOpen(false)}
+          prompt={prompt}
+        />
+      )}
+
+      {/* AI Prompt Enhancer Modal */}
+      {enhancerOpen && (
+        <PromptEnhancerModal
+          isOpen={enhancerOpen}
+          onClose={() => setEnhancerOpen(false)}
+          prompt={prompt}
+        />
+      )}
+
+      {/* Shareable Visual Card Modal */}
+      {shareOpen && (
+        <ShareablePromptCardModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          prompt={prompt}
+        />
+      )}
     </div>
   );
 }

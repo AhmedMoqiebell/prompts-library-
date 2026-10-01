@@ -71,12 +71,24 @@ export type SortOption =
   | 'most-used'
   | 'alphabetical';
 
+export interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  color?: string; // hex or tailwind color class
+  icon?: string;
+  promptIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface FilterOptions {
   category?: CategorySlug;
   subcategory?: string;
   tool?: string;
   tags?: string[];
   favorite?: boolean;
+  collectionId?: string;
   search?: string;
   sort?: SortOption;
 }

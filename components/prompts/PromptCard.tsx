@@ -10,6 +10,8 @@ import { formatDate, truncate, copyToClipboard } from '@/lib/utils';
 import { usePrompts } from '@/contexts/PromptContext';
 import { useToast } from '@/contexts/ToastContext';
 import type { Prompt } from '@/types/prompt';
+import { hasVariables } from '@/lib/variables';
+import { VariablePromptModal } from './VariablePromptModal';
 import {
   Copy,
   Check,
@@ -19,6 +21,8 @@ import {
   Edit3,
   Copy as CopyIcon,
   Trash2,
+  Sliders,
+  FolderOpen,
 } from 'lucide-react';
 
 interface PromptCardProps {
@@ -29,9 +33,11 @@ interface PromptCardProps {
 export function PromptCard({ prompt, className }: PromptCardProps) {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { toggleFavorite, incrementUsage, duplicatePrompt, deletePrompt } = usePrompts();
+  const [variableModalOpen, setVariableModalOpen] = useState(false);
+  const { toggleFavorite, incrementUsage, duplicatePrompt, deletePrompt, collections, togglePromptInCollection } = usePrompts();
   const { addToast } = useToast();
   const category = getCategoryMeta(prompt.category);
+  const containsVariables = hasVariables(prompt.content);
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -80,28 +86,39 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
       )}
     >
       <Link href={`/prompts/${prompt.id}`} className="block p-5">
-        {/* Top row: Category + Version + Date */}
+        {/* Top row: Category + Version + Date + Variables Badge */}
         <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
             <Badge variant="category" bgColor={category.bgColor} textColor={category.textColor}>
               {category.name}
             </Badge>
             <span className="text-[10px] font-mono font-medium text-[var(--color-text-tertiary)] bg-[var(--color-bg)] px-1.5 py-0.5 rounded border border-[var(--color-border-subtle)]">
               v{prompt.currentVersion || prompt.versions?.length || 1}
             </span>
+            {containsVariables && (
+              <span className="text-[10px] font-medium text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20 flex items-center gap-0.5">
+                <Sliders className="w-2.5 h-2.5" /> Template
+              </span>
+            )}
           </div>
           <span className="text-xs text-[var(--color-text-tertiary)]">
             {formatDate(prompt.createdAt)}
           </span>
         </div>
 
-        {/* Title */}
-        <h3 className="text-sm font-semibold text-[var(--color-text)] mb-1.5 line-clamp-2 leading-snug">
+        {/* Title with dir=auto for Arabic */}
+        <h3
+          dir="auto"
+          className="text-sm font-semibold text-[var(--color-text)] mb-1.5 line-clamp-2 leading-snug"
+        >
           {prompt.title}
         </h3>
 
-        {/* Description */}
-        <p className="text-sm text-[var(--color-text-secondary)] mb-3 line-clamp-2 leading-relaxed">
+        {/* Description with dir=auto for Arabic */}
+        <p
+          dir="auto"
+          className="text-sm text-[var(--color-text-secondary)] mb-3 line-clamp-2 leading-relaxed"
+        >
           {truncate(prompt.description || prompt.content, 120)}
         </p>
 
@@ -124,7 +141,7 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
 
       {/* Action bar */}
       <div className="flex items-center justify-between px-5 pb-4 pt-0">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {/* Copy button — primary action */}
           <Button
             variant="ghost"
@@ -135,6 +152,23 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
           >
             {copied ? 'Copied' : 'Copy'}
           </Button>
+
+          {/* Interactive Variable Fill button if prompt contains {{vars}} */}
+          {containsVariables && (
+            <Button
+              variant="outline"
+              size="sm"
+              icon={<Sliders className="w-3.5 h-3.5 text-amber-600" />}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setVariableModalOpen(true);
+              }}
+              className="h-7 px-2 text-xs border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300"
+            >
+              Fill & Run
+            </Button>
+          )}
 
           {/* Favorite */}
           <button
@@ -164,13 +198,13 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
           {menuOpen && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
-              <div className="absolute end-0 bottom-full mb-1 w-40 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] py-1 z-20 animate-scale-in">
+              <div className="absolute end-0 bottom-full mb-1 w-48 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-[var(--shadow-lg)] py-1 z-20 animate-scale-in">
                 <Link
                   href={`/prompts/${prompt.id}`}
                   className="flex items-center gap-2 px-3 py-1.5 text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]"
                   onClick={() => setMenuOpen(false)}
                 >
-                  <ExternalLink className="w-3.5 h-3.5" /> Open
+                  <ExternalLink className="w-3.5 h-3.5" /> Open Details
                 </Link>
                 <Link
                   href={`/prompts/${prompt.id}/edit`}
@@ -185,6 +219,39 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
                 >
                   <CopyIcon className="w-3.5 h-3.5" /> Duplicate
                 </button>
+
+                {/* Collections submenu */}
+                {collections.length > 0 && (
+                  <>
+                    <div className="border-t border-[var(--color-border-subtle)] my-1" />
+                    <div className="px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--color-text-tertiary)]">
+                      Add to Collection
+                    </div>
+                    {collections.map((col) => {
+                      const inCol = col.promptIds.includes(prompt.id);
+                      return (
+                        <button
+                          key={col.id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            togglePromptInCollection(col.id, prompt.id);
+                            addToast(
+                              inCol ? `Removed from ${col.name}` : `Added to ${col.name}`,
+                              'success',
+                            );
+                            setMenuOpen(false);
+                          }}
+                          className="flex items-center justify-between w-full px-3 py-1.5 text-xs text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] cursor-pointer"
+                        >
+                          <span className="truncate">{col.name}</span>
+                          {inCol && <Check className="w-3 h-3 text-[var(--color-accent)] shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+
                 <div className="border-t border-[var(--color-border-subtle)] my-1" />
                 <button
                   onClick={handleDelete}
@@ -197,6 +264,15 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
           )}
         </div>
       </div>
+
+      {/* Variables Modal */}
+      {variableModalOpen && (
+        <VariablePromptModal
+          isOpen={variableModalOpen}
+          onClose={() => setVariableModalOpen(false)}
+          prompt={prompt}
+        />
+      )}
     </article>
   );
 }

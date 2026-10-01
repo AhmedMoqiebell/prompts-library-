@@ -1,11 +1,12 @@
 'use client';
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react';
-import type { Prompt, FilterOptions } from '@/types/prompt';
+import type { Prompt, FilterOptions, Collection } from '@/types/prompt';
 import { promptService } from '@/services/promptService';
 
 interface PromptContextValue {
   prompts: Prompt[];
+  collections: Collection[];
   loading: boolean;
   refresh: () => void;
   createPrompt: (data: Omit<Prompt, 'id' | 'createdAt' | 'updatedAt' | 'usageCount' | 'currentVersion' | 'versions'>) => Prompt;
@@ -18,16 +19,22 @@ interface PromptContextValue {
   duplicatePrompt: (id: string) => Prompt | null;
   searchPrompts: (query: string, filters?: FilterOptions) => Prompt[];
   getStats: () => ReturnType<typeof promptService.getStats>;
+  createCollection: (name: string, description?: string, color?: string) => Collection;
+  updateCollection: (id: string, data: Partial<Collection>) => Collection | null;
+  deleteCollection: (id: string) => boolean;
+  togglePromptInCollection: (collectionId: string, promptId: string) => boolean;
 }
 
 const PromptContext = createContext<PromptContextValue | null>(null);
 
 export function PromptProvider({ children }: { children: ReactNode }) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(() => {
     setPrompts(promptService.getAll());
+    setCollections(promptService.getCollections());
   }, []);
 
   useEffect(() => {
@@ -117,10 +124,47 @@ export function PromptProvider({ children }: { children: ReactNode }) {
     return promptService.getStats();
   }, []);
 
+  const createCollection = useCallback(
+    (name: string, description?: string, color?: string) => {
+      const col = promptService.createCollection(name, description, color);
+      refresh();
+      return col;
+    },
+    [refresh],
+  );
+
+  const updateCollection = useCallback(
+    (id: string, data: Partial<Collection>) => {
+      const col = promptService.updateCollection(id, data);
+      refresh();
+      return col;
+    },
+    [refresh],
+  );
+
+  const deleteCollection = useCallback(
+    (id: string) => {
+      const result = promptService.deleteCollection(id);
+      refresh();
+      return result;
+    },
+    [refresh],
+  );
+
+  const togglePromptInCollection = useCallback(
+    (collectionId: string, promptId: string) => {
+      const result = promptService.togglePromptInCollection(collectionId, promptId);
+      refresh();
+      return result;
+    },
+    [refresh],
+  );
+
   return (
     <PromptContext
       value={{
         prompts,
+        collections,
         loading,
         refresh,
         createPrompt,
@@ -133,6 +177,10 @@ export function PromptProvider({ children }: { children: ReactNode }) {
         duplicatePrompt,
         searchPrompts,
         getStats,
+        createCollection,
+        updateCollection,
+        deleteCollection,
+        togglePromptInCollection,
       }}
     >
       {children}

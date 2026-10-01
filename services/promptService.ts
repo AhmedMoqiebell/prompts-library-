@@ -1,7 +1,8 @@
-import type { Prompt, PromptVersion, FilterOptions, CategorySlug } from '@/types/prompt';
+import type { Prompt, PromptVersion, FilterOptions, CategorySlug, Collection } from '@/types/prompt';
 import { generateId } from '@/lib/utils';
 
 const STORAGE_KEY = 'promptvault_prompts';
+const COLLECTIONS_STORAGE_KEY = 'promptvault_collections';
 
 function normalizePrompt(p: Prompt): Prompt {
   if (!p.versions || p.versions.length === 0) {
@@ -33,7 +34,97 @@ function getPrompts(): Prompt[] {
   if (typeof window === 'undefined') return [];
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    if (!data) return [];
+    if (!data) {
+      const defaultPrompts: Prompt[] = [
+        {
+          id: 'prompt-starter-code-review',
+          userId: 'local-user',
+          title: 'Full-Stack Code Review & Security Audit',
+          description: 'Comprehensive code review prompt analyzing security, performance, clean architecture, and edge cases.',
+          category: 'programming',
+          subcategory: 'Code Review',
+          tool: 'ChatGPT / Claude',
+          technologies: ['TypeScript', 'Node.js', 'React'],
+          tags: ['security', 'architecture', 'best-practices', 'template'],
+          favorite: true,
+          usageCount: 14,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          content: `You are an elite Senior Principal Software Architect and Security Auditor specializing in {{framework:Next.js}} and {{backend:Node.js}}.
+
+Review the provided code snippet with meticulous attention to:
+1. Critical Vulnerabilities (Injection, CSRF, broken access control)
+2. Performance bottlenecks and unnecessary re-renders
+3. Modern idiomatic patterns and type safety
+4. Priority focus area: {{focus_area:Security & Scalability}}
+
+Provide output structured with:
+- Executive Summary & Risk Level (Low/Medium/High)
+- Concrete Issues found with code diff fixes
+- Recommended architectural improvements`,
+        },
+        {
+          id: 'prompt-starter-arabic-seo',
+          userId: 'local-user',
+          title: 'مساعد كتابة مقالات احترافية متوافقة مع معايير SEO',
+          description: 'برومبت متخصص في صياغة مقالات متكاملة ومتوافقة مع محركات البحث باللغة العربية باحترافية عالية.',
+          category: 'writing',
+          subcategory: 'Content & SEO',
+          tool: 'Claude 3.5 / ChatGPT',
+          technologies: ['SEO', 'Copywriting'],
+          tags: ['عربي', 'seo', 'مقالات', 'محتوى'],
+          favorite: true,
+          usageCount: 8,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          content: `بصفتك خبير استراتيجي في تحسين محركات البحث (SEO) وكاتب محتوى متميز باللغة العربية:
+
+المطلوب:
+كتابة مقال شامل، جذاب، واحترافي حول موضوع: {{topic:أحدث اتجاهات الذكاء الاصطناعي في 2026}}
+الجمهور المستهدف: {{target_audience:المطورين ورواد الأعمال}}
+الطول المستهدف: {{target_words:1000}} كلمة تقريباً.
+
+إرشادات الصياغة:
+1. صياغة عنوان جذاب مع تضمين الكلمة المفتاحية الرئيسية.
+2. مقدمة تشد القارئ وتوضح الفائدة المباشرة.
+3. عناوين فرعية (H2 و H3) مقسمة بشكل منطقي وسهل القراءة.
+4. نقاط عملية وحلول قابلة للتطبيق الفعلي مع تجنب الحشو والعبارات الإنشائية.
+5. خاتمة تلخص أهم النتائج مع دعوة لاتخاذ إجراء (Call to Action).`,
+        },
+        {
+          id: 'prompt-starter-saas-copy',
+          userId: 'local-user',
+          title: 'High-Converting SaaS Landing Page Hero Copy',
+          description: 'Framework to produce high-converting hero headlines, subheads, and CTA microcopy.',
+          category: 'ui-ux-design',
+          subcategory: 'Conversion Copy',
+          tool: 'Claude / Gemini',
+          technologies: ['Marketing', 'Conversion Rate Optimization'],
+          tags: ['saas', 'copywriting', 'conversion', 'landing-page'],
+          favorite: false,
+          usageCount: 5,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          content: `Act as a world-class Conversion Rate Optimization (CRO) copywriter.
+
+We are launching {{product_name:PromptVault}} which solves {{core_problem:scattered and forgotten AI prompts for creators}}.
+
+Generate 3 high-converting Hero Section variations:
+- Variation 1: Direct & Outcome-driven
+- Variation 2: Pain-point & Relief
+- Variation 3: Social Proof & Status
+
+For each variation, include:
+1. Primary Headline (under 9 words)
+2. Compelling Subheadline (2 sentences max)
+3. Primary Call-to-Action button text
+4. Microcopy beneath CTA addressing friction`,
+        },
+      ];
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPrompts));
+      return defaultPrompts.map(normalizePrompt);
+    }
     const list: Prompt[] = JSON.parse(data);
     return list.map(normalizePrompt);
   } catch {
@@ -44,6 +135,38 @@ function getPrompts(): Prompt[] {
 function savePrompts(prompts: Prompt[]): void {
   if (typeof window === 'undefined') return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
+}
+
+function getCollections(): Collection[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const data = localStorage.getItem(COLLECTIONS_STORAGE_KEY);
+    if (!data) {
+      // Seed default collections if none exist
+      const defaultCollections: Collection[] = [
+        {
+          id: 'col-getting-started',
+          name: 'Essential Starters',
+          description: 'High-leverage foundation prompts for daily work',
+          color: '#3B82F6',
+          icon: 'Sparkles',
+          promptIds: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+      localStorage.setItem(COLLECTIONS_STORAGE_KEY, JSON.stringify(defaultCollections));
+      return defaultCollections;
+    }
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+function saveCollections(collections: Collection[]): void {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(COLLECTIONS_STORAGE_KEY, JSON.stringify(collections));
 }
 
 export const promptService = {
@@ -272,6 +395,16 @@ export const promptService = {
           filters.tags!.some((t) => p.tags.includes(t)),
         );
       }
+      if (filters.collectionId) {
+        const collections = getCollections();
+        const targetCol = collections.find((c) => c.id === filters.collectionId);
+        if (targetCol) {
+          const ids = new Set(targetCol.promptIds);
+          prompts = prompts.filter((p) => ids.has(p.id));
+        } else {
+          prompts = [];
+        }
+      }
     }
 
     // Sort
@@ -344,6 +477,102 @@ export const promptService = {
 
   exportAll(): string {
     return JSON.stringify(getPrompts(), null, 2);
+  },
+
+  exportAsMarkdown(): string {
+    const prompts = getPrompts();
+    const date = new Date().toISOString().split('T')[0];
+    let md = `# PromptVault Library Export\n*Exported on ${date} • Total Prompts: ${prompts.length}*\n\n---\n\n`;
+
+    for (const p of prompts) {
+      md += `## ${p.title}\n`;
+      md += `- **Category:** ${p.category} ${p.subcategory ? `> ${p.subcategory}` : ''}\n`;
+      if (p.tool) md += `- **Target Tool:** ${p.tool}\n`;
+      if (p.tags && p.tags.length > 0) md += `- **Tags:** ${p.tags.join(', ')}\n`;
+      if (p.description) md += `- **Description:** ${p.description}\n`;
+      md += `\n\`\`\`text\n${p.content}\n\`\`\`\n\n---\n\n`;
+    }
+
+    return md;
+  },
+
+  exportAsCsv(): string {
+    const prompts = getPrompts();
+    const headers = ['ID', 'Title', 'Category', 'Subcategory', 'Tool', 'Tags', 'Favorite', 'UsageCount', 'Description', 'Content'];
+    const rows = prompts.map((p) => [
+      `"${p.id}"`,
+      `"${(p.title || '').replace(/"/g, '""')}"`,
+      `"${(p.category || '').replace(/"/g, '""')}"`,
+      `"${(p.subcategory || '').replace(/"/g, '""')}"`,
+      `"${(p.tool || '').replace(/"/g, '""')}"`,
+      `"${(p.tags || []).join('; ')}"`,
+      `"${p.favorite ? 'true' : 'false'}"`,
+      `"${p.usageCount}"`,
+      `"${(p.description || '').replace(/"/g, '""')}"`,
+      `"${(p.content || '').replace(/"/g, '""')}"`,
+    ]);
+
+    return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+  },
+
+  // ─── Collections Management ───
+  getCollections(): Collection[] {
+    return getCollections();
+  },
+
+  createCollection(name: string, description?: string, color: string = '#3B82F6'): Collection {
+    const collections = getCollections();
+    const now = new Date().toISOString();
+    const newCol: Collection = {
+      id: generateId(),
+      name,
+      description,
+      color,
+      promptIds: [],
+      createdAt: now,
+      updatedAt: now,
+    };
+    collections.push(newCol);
+    saveCollections(collections);
+    return newCol;
+  },
+
+  updateCollection(id: string, data: Partial<Collection>): Collection | null {
+    const collections = getCollections();
+    const idx = collections.findIndex((c) => c.id === id);
+    if (idx === -1) return null;
+    const updated: Collection = {
+      ...collections[idx],
+      ...data,
+      updatedAt: new Date().toISOString(),
+    };
+    collections[idx] = updated;
+    saveCollections(collections);
+    return updated;
+  },
+
+  deleteCollection(id: string): boolean {
+    const collections = getCollections();
+    const filtered = collections.filter((c) => c.id !== id);
+    if (filtered.length === collections.length) return false;
+    saveCollections(filtered);
+    return true;
+  },
+
+  togglePromptInCollection(collectionId: string, promptId: string): boolean {
+    const collections = getCollections();
+    const col = collections.find((c) => c.id === collectionId);
+    if (!col) return false;
+
+    const exists = col.promptIds.includes(promptId);
+    if (exists) {
+      col.promptIds = col.promptIds.filter((id) => id !== promptId);
+    } else {
+      col.promptIds.push(promptId);
+    }
+    col.updatedAt = new Date().toISOString();
+    saveCollections(collections);
+    return !exists;
   },
 
   importFromJson(json: string): { imported: number; errors: number } {

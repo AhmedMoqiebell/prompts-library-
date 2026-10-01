@@ -5,7 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/Button';
-import { Search, Plus, Menu, X, User } from 'lucide-react';
+import { Search, Plus, Menu, User, Sun, Moon, Languages } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+import { CommandPalette } from './CommandPalette';
+import { HeaderInstallButton } from '@/components/pwa/PwaInstallPrompt';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -14,10 +19,10 @@ interface HeaderProps {
 
 export function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
   const router = useRouter();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { resolvedTheme, toggleTheme } = useTheme();
+  const { language, toggleLanguage, t } = useLanguage();
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const searchInputRef = useRef<HTMLInputElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
   // Cmd+K shortcut
@@ -25,17 +30,12 @@ export function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setSearchOpen(true);
-        requestAnimationFrame(() => searchInputRef.current?.focus());
-      }
-      if (e.key === 'Escape' && searchOpen) {
-        setSearchOpen(false);
-        setSearchQuery('');
+        setCommandPaletteOpen((prev) => !prev);
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [searchOpen]);
+  }, []);
 
   // Close profile on outside click
   useEffect(() => {
@@ -48,64 +48,79 @@ export function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
-    }
-  };
-
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-30 h-16 bg-[var(--color-surface)]/95 backdrop-blur-sm border-b border-[var(--color-border)]',
-        'flex items-center gap-4 px-4 lg:px-6',
-        'transition-all duration-200',
-      )}
-    >
-      {/* Mobile menu button */}
-      <button
-        onClick={onMenuClick}
-        className="lg:hidden p-2 rounded-[var(--radius-md)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] cursor-pointer transition-colors"
-        aria-label="Open menu"
+    <>
+      <header
+        className={cn(
+          'sticky top-0 z-30 h-16 bg-[var(--color-surface)]/95 backdrop-blur-sm border-b border-[var(--color-border)]',
+          'flex items-center gap-4 px-4 lg:px-6',
+          'transition-all duration-200',
+        )}
       >
-        <Menu className="w-5 h-5" />
-      </button>
+        {/* Mobile menu button */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden p-2 rounded-[var(--radius-md)] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] cursor-pointer transition-colors"
+          aria-label="Open menu"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
 
-      {/* Search bar */}
-      <form onSubmit={handleSearchSubmit} className="flex-1 max-w-xl">
-        <div className="relative">
-          <Search className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-tertiary)] pointer-events-none" />
-          <input
-            ref={searchInputRef}
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search prompts..."
-            className={cn(
-              'w-full h-9 ps-9 pe-3 text-sm rounded-[var(--radius-md)]',
-              'border border-[var(--color-border)] bg-[var(--color-bg)]',
-              'text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)]',
-              'hover:border-[var(--color-border-strong)]',
-              'focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)] focus:border-transparent',
-              'transition-colors duration-150',
-            )}
-          />
-          <kbd className="absolute end-3 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-border-subtle)] rounded border border-[var(--color-border)]">
+        {/* Quick Search Button / Bar (opens Command Palette) */}
+        <button
+          type="button"
+          onClick={() => setCommandPaletteOpen(true)}
+          className={cn(
+            'flex-1 max-w-xl h-9 ps-3 pe-3 text-sm rounded-[var(--radius-md)]',
+            'border border-[var(--color-border)] bg-[var(--color-bg)]',
+            'text-[var(--color-text-tertiary)] flex items-center justify-between',
+            'hover:border-[var(--color-border-strong)] transition-colors duration-150 cursor-pointer text-start',
+          )}
+        >
+          <div className="flex items-center gap-2.5 truncate">
+            <Search className="w-4 h-4 text-[var(--color-text-tertiary)] shrink-0" />
+            <span className="truncate">{t('searchPlaceholder')}</span>
+          </div>
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-surface)] rounded border border-[var(--color-border)]">
             ⌘K
           </kbd>
-        </div>
-      </form>
+        </button>
 
       {/* Actions */}
       <div className="flex items-center gap-2">
+        {/* Language Switcher */}
+        <button
+          onClick={toggleLanguage}
+          className="h-9 px-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] text-xs font-medium text-[var(--color-text)] hover:border-[var(--color-border-strong)] transition-all flex items-center gap-1.5 cursor-pointer"
+          title={language === 'ar' ? 'Switch to English' : 'التحويل للغة العربية'}
+        >
+          <Languages className="w-4 h-4 text-[var(--color-accent)]" />
+          <span className="font-semibold">{language === 'ar' ? 'English' : 'العربية'}</span>
+        </button>
+
+        {/* Theme Toggle (Dark / Light) */}
+        <button
+          onClick={toggleTheme}
+          className="w-9 h-9 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] hover:border-[var(--color-border-strong)] transition-all flex items-center justify-center cursor-pointer"
+          title={resolvedTheme === 'dark' ? (language === 'ar' ? 'التحويل للوضع الفاتح' : 'Switch to Light') : (language === 'ar' ? 'التحويل للوضع الداكن' : 'Switch to Dark')}
+          aria-label="Toggle theme"
+        >
+          {resolvedTheme === 'dark' ? (
+            <Sun className="w-4 h-4 text-amber-500 animate-scale-in" />
+          ) : (
+            <Moon className="w-4 h-4 text-slate-700 animate-scale-in" />
+          )}
+        </button>
+
+        {/* PWA Install Button */}
+        <HeaderInstallButton />
+
         <Button
           size="sm"
           icon={<Plus className="w-4 h-4" />}
           onClick={() => router.push('/prompts/new')}
         >
-          <span className="hidden sm:inline">Add Prompt</span>
+          <span className="hidden sm:inline">{t('addPrompt')}</span>
         </Button>
 
         {/* Profile */}
@@ -138,6 +153,11 @@ export function Header({ onMenuClick, sidebarCollapsed }: HeaderProps) {
           )}
         </div>
       </div>
-    </header>
+      </header>
+      <CommandPalette
+        isOpen={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+      />
+    </>
   );
 }

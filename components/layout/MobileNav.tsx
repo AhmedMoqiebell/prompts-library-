@@ -3,25 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
-import { X, LayoutDashboard, Library, Code2, PenLine, ImageIcon, Video, Palette, BarChart3, Heart, Tags, Settings, Layers, Sparkles } from 'lucide-react';
-import { useEffect } from 'react';
-
-const navItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/prompts', label: 'All Prompts', icon: Library },
-  { type: 'divider' as const, label: 'Categories' },
-  { href: '/category/programming', label: 'Programming', icon: Code2 },
-  { href: '/category/writing', label: 'Writing', icon: PenLine },
-  { href: '/category/image-generation', label: 'Image Gen', icon: ImageIcon },
-  { href: '/category/video-generation', label: 'Video Gen', icon: Video },
-  { href: '/category/ui-ux-design', label: 'UI/UX & Design', icon: Palette },
-  { href: '/category/research-analysis', label: 'Research', icon: BarChart3 },
-  { href: '/category/general', label: 'General', icon: Layers },
-  { type: 'divider' as const, label: 'Library' },
-  { href: '/favorites', label: 'Favorites', icon: Heart },
-  { href: '/tags', label: 'Tags', icon: Tags },
-  { href: '/settings', label: 'Settings', icon: Settings },
-];
+import { X, LayoutDashboard, Library, Code2, PenLine, ImageIcon, Video, Palette, BarChart3, Heart, Tags, Settings, Layers, Sparkles, FolderOpen } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface MobileNavProps {
   open: boolean;
@@ -30,6 +14,28 @@ interface MobileNavProps {
 
 export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = useMemo(
+    () => [
+      { href: '/', label: t('dashboard'), icon: LayoutDashboard },
+      { href: '/prompts', label: t('allPrompts'), icon: Library },
+      { href: '/collections', label: t('collections'), icon: FolderOpen },
+      { type: 'divider' as const, label: t('categories') },
+      { href: '/category/programming', label: t('cat_programming'), icon: Code2 },
+      { href: '/category/writing', label: t('cat_writing'), icon: PenLine },
+      { href: '/category/image-generation', label: t('cat_imageGen'), icon: ImageIcon },
+      { href: '/category/video-generation', label: t('cat_videoGen'), icon: Video },
+      { href: '/category/ui-ux-design', label: t('cat_uiUx'), icon: Palette },
+      { href: '/category/research-analysis', label: t('cat_research'), icon: BarChart3 },
+      { href: '/category/general', label: t('cat_general'), icon: Layers },
+      { type: 'divider' as const, label: t('library') },
+      { href: '/favorites', label: t('favorites'), icon: Heart },
+      { href: '/tags', label: t('tags'), icon: Tags },
+      { href: '/settings', label: t('settings'), icon: Settings },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (open) {

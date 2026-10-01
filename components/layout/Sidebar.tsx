@@ -19,25 +19,10 @@ import {
   ChevronRight,
   Layers,
   Sparkles,
+  FolderOpen,
 } from 'lucide-react';
-import { useState } from 'react';
-
-const navItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/prompts', label: 'All Prompts', icon: Library },
-  { type: 'divider' as const, label: 'Categories' },
-  { href: '/category/programming', label: 'Programming', icon: Code2 },
-  { href: '/category/writing', label: 'Writing', icon: PenLine },
-  { href: '/category/image-generation', label: 'Image Generation', icon: ImageIcon },
-  { href: '/category/video-generation', label: 'Video Generation', icon: Video },
-  { href: '/category/ui-ux-design', label: 'UI/UX & Design', icon: Palette },
-  { href: '/category/research-analysis', label: 'Research & Analysis', icon: BarChart3 },
-  { href: '/category/general', label: 'General / Other', icon: Layers },
-  { type: 'divider' as const, label: 'Library' },
-  { href: '/favorites', label: 'Favorites', icon: Heart },
-  { href: '/tags', label: 'Tags', icon: Tags },
-  { href: '/settings', label: 'Settings', icon: Settings },
-];
+import { useState, useMemo } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SidebarProps {
   collapsed: boolean;
@@ -47,6 +32,28 @@ interface SidebarProps {
 
 export function Sidebar({ collapsed, onToggle, className }: SidebarProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = useMemo(
+    () => [
+      { href: '/', label: t('dashboard'), icon: LayoutDashboard },
+      { href: '/prompts', label: t('allPrompts'), icon: Library },
+      { href: '/collections', label: t('collections'), icon: FolderOpen },
+      { type: 'divider' as const, label: t('categories') },
+      { href: '/category/programming', label: t('cat_programming'), icon: Code2 },
+      { href: '/category/writing', label: t('cat_writing'), icon: PenLine },
+      { href: '/category/image-generation', label: t('cat_imageGen'), icon: ImageIcon },
+      { href: '/category/video-generation', label: t('cat_videoGen'), icon: Video },
+      { href: '/category/ui-ux-design', label: t('cat_uiUx'), icon: Palette },
+      { href: '/category/research-analysis', label: t('cat_research'), icon: BarChart3 },
+      { href: '/category/general', label: t('cat_general'), icon: Layers },
+      { type: 'divider' as const, label: t('library') },
+      { href: '/favorites', label: t('favorites'), icon: Heart },
+      { href: '/tags', label: t('tags'), icon: Tags },
+      { href: '/settings', label: t('settings'), icon: Settings },
+    ],
+    [t],
+  );
 
   return (
     <aside
