@@ -79,15 +79,15 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
   return (
     <article
       className={cn(
-        'group relative bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)]',
+        '@container group relative bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)]',
         'hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-sm)]',
-        'transition-all duration-150 cursor-pointer',
+        'transition-all duration-150 cursor-pointer flex flex-col justify-between',
         className,
       )}
     >
-      <Link href={`/prompts/${prompt.id}`} className="block p-5">
+      <Link href={`/prompts/${prompt.id}`} className="block p-4 sm:p-5 flex-1">
         {/* Top row: Category + Version + Date + Variables Badge */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 gap-2">
           <div className="flex items-center gap-1.5 flex-wrap">
             <Badge variant="category" bgColor={category.bgColor} textColor={category.textColor}>
               {category.name}
@@ -101,7 +101,7 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
               </span>
             )}
           </div>
-          <span className="text-xs text-[var(--color-text-tertiary)]">
+          <span className="text-xs text-[var(--color-text-tertiary)] shrink-0">
             {formatDate(prompt.createdAt)}
           </span>
         </div>
@@ -140,15 +140,15 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
       </Link>
 
       {/* Action bar */}
-      <div className="flex items-center justify-between px-5 pb-4 pt-0">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-between px-4 sm:px-5 pb-3.5 sm:pb-4 pt-0 gap-2">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {/* Copy button — primary action */}
           <Button
             variant="ghost"
             size="sm"
             icon={copied ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
             onClick={handleCopy}
-            className={cn('h-7 px-2', copied && 'text-[var(--color-success)]')}
+            className={cn('h-8 sm:h-7 px-2.5 sm:px-2 min-h-[32px]', copied && 'text-[var(--color-success)]')}
           >
             {copied ? 'Copied' : 'Copy'}
           </Button>
@@ -164,7 +164,7 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
                 e.stopPropagation();
                 setVariableModalOpen(true);
               }}
-              className="h-7 px-2 text-xs border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300"
+              className="h-8 sm:h-7 px-2.5 sm:px-2 text-xs border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300 min-h-[32px]"
             >
               Fill & Run
             </Button>
@@ -174,22 +174,22 @@ export function PromptCard({ prompt, className }: PromptCardProps) {
           <button
             onClick={handleFavorite}
             className={cn(
-              'p-1.5 rounded-[var(--radius-sm)] transition-colors cursor-pointer',
+              'w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] transition-colors cursor-pointer',
               prompt.favorite
-                ? 'text-red-500 hover:bg-red-50'
-                : 'text-[var(--color-text-tertiary)] hover:text-red-500 hover:bg-red-50',
+                ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30'
+                : 'text-[var(--color-text-tertiary)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30',
             )}
             aria-label={prompt.favorite ? 'Remove from favorites' : 'Add to favorites'}
           >
-            <Heart className={cn('w-3.5 h-3.5', prompt.favorite && 'fill-current')} />
+            <Heart className={cn('w-4 h-4', prompt.favorite && 'fill-current')} />
           </button>
         </div>
 
-        {/* More actions */}
+        {/* More actions — visible on mobile/touch, hover on desktop */}
         <div className="relative">
           <button
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); setMenuOpen(!menuOpen); }}
-            className="p-1.5 rounded-[var(--radius-sm)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer opacity-0 group-hover:opacity-100"
+            className="w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
             aria-label="More actions"
           >
             <MoreHorizontal className="w-4 h-4" />

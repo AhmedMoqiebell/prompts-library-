@@ -20,7 +20,7 @@ export function PwaInstallPrompt() {
         <div
           role="dialog"
           aria-label={t('installPromptTitle')}
-          className="fixed bottom-4 start-4 end-4 sm:start-auto sm:end-6 sm:max-w-md z-50 p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)]/95 backdrop-blur-md border border-[var(--color-border)] shadow-[var(--shadow-xl)] animate-slide-up transition-all"
+          className="fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 start-3 end-3 sm:start-auto sm:end-6 sm:max-w-md z-50 p-4 rounded-[var(--radius-xl)] bg-[var(--color-surface)]/95 backdrop-blur-md border border-[var(--color-border)] shadow-[var(--shadow-xl)] animate-slide-up transition-all"
         >
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-gradient-to-br from-[#db5f29] to-[#8edbec] p-0.5 flex-shrink-0 shadow-sm">

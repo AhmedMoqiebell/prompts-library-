@@ -43,20 +43,20 @@ export default function AllPromptsPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)] tracking-tight">All Prompts</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">All Prompts</h1>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-0.5 sm:mt-1">
             {filtered.length} {filtered.length === 1 ? 'prompt' : 'prompts'}
           </p>
         </div>
-        <Link href="/prompts/new">
+        <Link href="/prompts/new" className="self-start sm:self-auto">
           <Button icon={<Plus className="w-4 h-4" />}>Add Prompt</Button>
         </Link>
       </div>
 
       {/* Filters bar */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
         <div className="flex-1 max-w-md">
           <Input
             placeholder="Search prompts..."
@@ -65,7 +65,7 @@ export default function AllPromptsPage() {
             iconStart={<Search className="w-4 h-4" />}
           />
         </div>
-        <div className="flex gap-3">
+        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2.5 sm:gap-3">
           <Select
             options={[{ value: '', label: 'All Categories' }, ...CATEGORIES.map((c) => ({ value: c.slug, label: c.name }))]}
             value={categoryFilter}
@@ -82,7 +82,7 @@ export default function AllPromptsPage() {
       {/* Prompts grid */}
       {paginated.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 stagger-children">
             {paginated.map((prompt) => (
               <PromptCard key={prompt.id} prompt={prompt} />
             ))}

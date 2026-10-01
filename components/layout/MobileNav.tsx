@@ -62,11 +62,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
 
       {/* Drawer */}
       <nav
-        className="absolute top-0 start-0 bottom-0 w-72 bg-[var(--color-surface)] shadow-[var(--shadow-xl)] animate-slide-in-right"
+        className="absolute top-0 start-0 bottom-0 w-72 max-w-[85vw] bg-[var(--color-surface)] shadow-[var(--shadow-xl)] animate-slide-in-right flex flex-col"
         aria-label="Mobile navigation"
       >
         {/* Header */}
-        <div className="flex items-center justify-between h-16 px-5 border-b border-[var(--color-border)]">
+        <div className="flex items-center justify-between h-16 pt-[env(safe-area-inset-top,0px)] px-5 border-b border-[var(--color-border)] shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-accent)] flex items-center justify-center">
               <Sparkles className="w-4.5 h-4.5 text-white" />
@@ -75,7 +75,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] cursor-pointer"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -83,7 +83,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
         </div>
 
         {/* Nav items */}
-        <ul className="p-3 flex flex-col gap-0.5 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 64px)' }}>
+        <ul className="p-3 flex-1 flex flex-col gap-0.5 overflow-y-auto pb-[max(1.5rem,env(safe-area-inset-bottom,0px))]">
           {navItems.map((item, index) => {
             if ('type' in item && item.type === 'divider') {
               return (
@@ -104,7 +104,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 <Link
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-md)] transition-colors cursor-pointer',
+                    'flex items-center gap-3 px-3 py-3 rounded-[var(--radius-md)] min-h-[44px] transition-colors cursor-pointer',
                     isActive
                       ? 'bg-[var(--color-accent-light)] text-[var(--color-accent)]'
                       : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text)]',

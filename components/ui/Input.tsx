@@ -35,7 +35,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cn(
-              'w-full h-9 px-3 text-sm rounded-[var(--radius-md)]',
+              'w-full h-10 sm:h-9 px-3 text-base sm:text-sm rounded-[var(--radius-md)]',
               'border border-[var(--color-border)] bg-[var(--color-surface)]',
               'text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)]',
               'transition-colors duration-150',

@@ -72,29 +72,29 @@ export function VariablePromptModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
       <div
-        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-2xl w-full max-h-[90vh] flex flex-col animate-scale-in overflow-hidden"
+        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-2xl w-full max-h-[90dvh] flex flex-col animate-scale-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-[var(--color-border)] shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-accent-light)] flex items-center justify-center text-[var(--color-accent)]">
+            <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-accent-light)] flex items-center justify-center text-[var(--color-accent)] shrink-0">
               <Sliders className="w-4 h-4" />
             </div>
-            <div>
-              <h2 className="text-base font-semibold text-[var(--color-text)]">
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-base font-semibold text-[var(--color-text)] truncate">
                 Fill Prompt Variables
               </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
+              <p className="text-xs text-[var(--color-text-secondary)] truncate">
                 {prompt.title}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-[var(--radius-sm)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer shrink-0"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -102,17 +102,17 @@ export function VariablePromptModal({
         </div>
 
         {/* Mode Tabs on Mobile/Desktop */}
-        <div className="flex items-center justify-between px-6 pt-3 pb-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-2.5 pb-2 border-b border-[var(--color-border-subtle)] bg-[var(--color-bg)] shrink-0">
           <div className="flex items-center gap-2">
             <Badge variant="category" bgColor="bg-blue-50 text-blue-700">
-              {variables.length} {variables.length === 1 ? 'Variable' : 'Variables'} Detected
+              {variables.length} {variables.length === 1 ? 'Variable' : 'Variables'}
             </Badge>
           </div>
           <div className="flex items-center gap-1">
             <button
               onClick={() => setActiveTab('fill')}
               className={cn(
-                'px-3 py-1 text-xs font-medium rounded-[var(--radius-md)] transition-colors cursor-pointer',
+                'px-3 py-1.5 text-xs font-medium rounded-[var(--radius-md)] transition-colors cursor-pointer',
                 activeTab === 'fill'
                   ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-xs'
                   : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
@@ -123,7 +123,7 @@ export function VariablePromptModal({
             <button
               onClick={() => setActiveTab('preview')}
               className={cn(
-                'px-3 py-1 text-xs font-medium rounded-[var(--radius-md)] transition-colors cursor-pointer flex items-center gap-1',
+                'px-3 py-1.5 text-xs font-medium rounded-[var(--radius-md)] transition-colors cursor-pointer flex items-center gap-1',
                 activeTab === 'preview'
                   ? 'bg-[var(--color-surface)] text-[var(--color-accent)] shadow-xs'
                   : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
@@ -135,7 +135,7 @@ export function VariablePromptModal({
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-4">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
           {activeTab === 'fill' ? (
             <div className="space-y-4">
               {variables.map((variable) => (
@@ -156,7 +156,7 @@ export function VariablePromptModal({
                         [variable.name]: e.target.value,
                       }))
                     }
-                    className="w-full px-3 py-2 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)] focus:border-transparent transition-colors"
+                    className="w-full px-3 py-2 text-base sm:text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)] focus:border-transparent transition-colors"
                   />
                 </div>
               ))}
@@ -165,7 +165,7 @@ export function VariablePromptModal({
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)] cursor-pointer"
+                  className="flex items-center gap-1 text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-text)] cursor-pointer py-1 px-2"
                 >
                   <RotateCcw className="w-3 h-3" /> Reset to defaults
                 </button>
@@ -187,20 +187,21 @@ export function VariablePromptModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:px-6 bg-[var(--color-bg)] border-t border-[var(--color-border)] flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="p-3.5 sm:px-6 bg-[var(--color-bg)] border-t border-[var(--color-border)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
           <AIPlatformLauncher
             promptId={prompt.id}
             getContent={() => assembledPrompt}
           />
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <Button variant="outline" size="sm" onClick={onClose}>
+            <Button variant="outline" size="sm" onClick={onClose} className="flex-1 sm:flex-initial">
               Cancel
             </Button>
             <Button
               size="sm"
               icon={copied ? <Check className="w-3.5 h-3.5 text-white" /> : <Copy className="w-3.5 h-3.5" />}
               onClick={handleCopy}
+              className="flex-1 sm:flex-initial"
             >
               {copied ? 'Copied with Values!' : 'Copy with Values'}
             </Button>

@@ -67,12 +67,12 @@ export function Modal({ open, onClose, title, description, children, className, 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
       onClick={handleBackdropClick}
       role="presentation"
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 animate-fade-in" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-xs animate-fade-in" />
 
       {/* Dialog */}
       <div
@@ -84,29 +84,29 @@ export function Modal({ open, onClose, title, description, children, className, 
         tabIndex={-1}
         className={cn(
           'relative w-full bg-[var(--color-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)]',
-          'animate-scale-in overflow-y-auto max-h-[85vh]',
+          'animate-scale-in overflow-y-auto max-h-[90dvh]',
           sizeStyles[size],
           className,
         )}
       >
         {/* Header */}
         {(title || true) && (
-          <div className="flex items-center justify-between p-6 pb-0">
-            <div>
+          <div className="flex items-center justify-between p-4 sm:p-6 pb-0">
+            <div className="pe-2">
               {title && (
-                <h2 id="modal-title" className="text-lg font-semibold text-[var(--color-text)]">
+                <h2 id="modal-title" className="text-base sm:text-lg font-semibold text-[var(--color-text)]">
                   {title}
                 </h2>
               )}
               {description && (
-                <p id="modal-description" className="mt-1 text-sm text-[var(--color-text-secondary)]">
+                <p id="modal-description" className="mt-1 text-xs sm:text-sm text-[var(--color-text-secondary)]">
                   {description}
                 </p>
               )}
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center shrink-0 rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
               aria-label="Close dialog"
             >
               <X className="w-5 h-5" />
@@ -115,7 +115,7 @@ export function Modal({ open, onClose, title, description, children, className, 
         )}
 
         {/* Content */}
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );

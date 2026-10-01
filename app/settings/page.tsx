@@ -102,15 +102,15 @@ export default function SettingsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-[var(--color-border)]">
+      <div className="flex gap-1 border-b border-[var(--color-border)] overflow-x-auto no-scrollbar">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              'px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer -mb-px',
+              'px-4 py-2.5 text-sm font-medium transition-colors cursor-pointer -mb-px shrink-0 whitespace-nowrap min-h-[44px]',
               activeTab === tab.id
-                ? 'text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]'
+                ? 'text-[var(--color-accent)] border-b-2 border-[var(--color-accent)] font-semibold'
                 : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
             )}
           >
@@ -121,9 +121,9 @@ export default function SettingsPage() {
 
       {/* Profile */}
       {activeTab === 'profile' && (
-        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 space-y-4">
-          <h2 className="text-lg font-semibold text-[var(--color-text)]">Profile</h2>
-          <p className="text-sm text-[var(--color-text-secondary)]">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-4 sm:p-6 space-y-4">
+          <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">Profile</h2>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">
             Profile management will be available when authentication is enabled.
             Currently, PromptVault stores all data locally on this device.
           </p>
@@ -132,29 +132,29 @@ export default function SettingsPage() {
 
       {/* Preferences */}
       {activeTab === 'preferences' && (
-        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-6 space-y-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-4 sm:p-6 space-y-6">
           <div>
-            <h2 className="text-lg font-semibold text-[var(--color-text)]">Preferences & Localization</h2>
-            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+            <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">Preferences & Localization</h2>
+            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-1">
               Configure language, reading direction, and library display options.
             </p>
           </div>
 
           <div className="space-y-4">
             {/* Language Selector */}
-            <div className="flex items-center justify-between p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
               <div>
                 <div className="text-sm font-medium text-[var(--color-text)]">{t('language')}</div>
                 <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
                   Select interface language and text orientation
                 </div>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-wrap">
                 <button
                   type="button"
                   onClick={() => setLanguage('ar')}
                   className={cn(
-                    'px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1',
+                    'px-3 py-2 sm:py-1.5 rounded-[var(--radius-md)] text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1 min-h-[38px]',
                     language === 'ar'
                       ? 'border-[var(--color-accent)] bg-[var(--color-accent-light)] text-[var(--color-accent)]'
                       : 'border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
@@ -167,7 +167,7 @@ export default function SettingsPage() {
                   type="button"
                   onClick={() => setLanguage('en')}
                   className={cn(
-                    'px-3 py-1.5 rounded-[var(--radius-md)] text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1',
+                    'px-3 py-2 sm:py-1.5 rounded-[var(--radius-md)] text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1 min-h-[38px]',
                     language === 'en'
                       ? 'border-[var(--color-accent)] bg-[var(--color-accent-light)] text-[var(--color-accent)]'
                       : 'border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
@@ -179,32 +179,32 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
               <div>
                 <div className="text-sm font-medium text-[var(--color-text)]">Bi-directional Text (RTL / LTR)</div>
                 <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
                   Automatically aligns Arabic text to the right and English/Code to the left.
                 </div>
               </div>
-              <span className="text-xs font-semibold text-[var(--color-success)] bg-[var(--color-success-light)] px-2.5 py-1 rounded-full">
+              <span className="text-xs font-semibold text-[var(--color-success)] bg-[var(--color-success-light)] px-2.5 py-1 rounded-full self-start sm:self-auto">
                 Active (Auto-Detect)
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
               <div>
                 <div className="text-sm font-medium text-[var(--color-text)]">Default Sort Order</div>
                 <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">
                   Order in which prompts appear in library listings.
                 </div>
               </div>
-              <span className="text-xs font-medium text-[var(--color-text)] bg-[var(--color-surface)] border border-[var(--color-border)] px-2.5 py-1 rounded-[var(--radius-md)]">
+              <span className="text-xs font-medium text-[var(--color-text)] bg-[var(--color-surface)] border border-[var(--color-border)] px-2.5 py-1 rounded-[var(--radius-md)] self-start sm:self-auto">
                 Newest First
               </span>
             </div>
 
             {/* PWA App Installation Row */}
-            <div className="flex items-center justify-between p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 bg-[var(--color-bg)] rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)]">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-[var(--radius-md)] bg-[var(--color-accent-light)] text-[var(--color-accent)] flex items-center justify-center flex-shrink-0">
                   <Smartphone className="w-5 h-5" />
@@ -221,7 +221,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               {isInstalled ? (
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1">
+                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 flex items-center gap-1 self-start sm:self-auto">
                   <Check className="w-3.5 h-3.5" />
                   {language === 'ar' ? 'التطبيق مثبّت' : 'Installed'}
                 </span>
@@ -230,6 +230,7 @@ export default function SettingsPage() {
                   size="sm"
                   onClick={() => promptInstall()}
                   icon={<Download className="w-3.5 h-3.5" />}
+                  className="self-start sm:self-auto"
                 >
                   {language === 'ar' ? 'تثبيت الآن' : 'Install App'}
                 </Button>

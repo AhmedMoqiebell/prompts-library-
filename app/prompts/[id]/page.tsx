@@ -189,94 +189,111 @@ export default function PromptDetailPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Actions Bar */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <Button
-          onClick={handleCopy}
-          icon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          variant={copied ? 'secondary' : 'primary'}
-        >
-          {copied ? 'Copied!' : 'Copy Prompt'}
-        </Button>
+      <div className="space-y-2.5">
+        {/* Primary Action Buttons */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button
+            onClick={handleCopy}
+            icon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            variant={copied ? 'secondary' : 'primary'}
+            className="flex-1 sm:flex-initial"
+          >
+            {copied ? 'Copied!' : 'Copy Prompt'}
+          </Button>
 
-        {/* Dynamic Variable Filler */}
-        {hasPromptVariables && (
+          {/* Dynamic Variable Filler */}
+          {hasPromptVariables && (
+            <Button
+              variant="outline"
+              onClick={() => setVariableOpen(true)}
+              icon={<Sliders className="w-4 h-4 text-amber-600" />}
+              className="border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300 flex-1 sm:flex-initial"
+            >
+              Fill Variables & Run
+            </Button>
+          )}
+
+          {/* AI Enhancer / Refiner */}
           <Button
             variant="outline"
-            onClick={() => setVariableOpen(true)}
-            icon={<Sliders className="w-4 h-4 text-amber-600" />}
-            className="border-amber-500/30 hover:bg-amber-500/5 text-amber-700 dark:text-amber-300"
+            onClick={() => setEnhancerOpen(true)}
+            icon={<Wand2 className="w-4 h-4 text-purple-600" />}
+            className="border-purple-500/30 hover:bg-purple-500/5 text-purple-700 dark:text-purple-300 flex-1 sm:flex-initial"
           >
-            Fill Variables & Run
+            AI Enhancer
           </Button>
-        )}
+        </div>
 
-        {/* AI Enhancer / Refiner */}
-        <Button
-          variant="outline"
-          onClick={() => setEnhancerOpen(true)}
-          icon={<Wand2 className="w-4 h-4 text-purple-600" />}
-          className="border-purple-500/30 hover:bg-purple-500/5 text-purple-700 dark:text-purple-300"
-        >
-          AI Enhancer
-        </Button>
+        {/* Secondary Utility Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShareOpen(true)}
+            icon={<Share2 className="w-3.5 h-3.5 text-blue-600" />}
+          >
+            Share Card
+          </Button>
 
-        {/* Shareable Card Generator */}
-        <Button
-          variant="outline"
-          onClick={() => setShareOpen(true)}
-          icon={<Share2 className="w-4 h-4 text-blue-600" />}
-        >
-          Share Card
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setHistoryOpen(true)}
+            icon={<History className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
+          >
+            Versions ({versionsCount})
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => setHistoryOpen(true)}
-          icon={<History className="w-4 h-4 text-[var(--color-accent)]" />}
-        >
-          Versions ({versionsCount})
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setQualityOpen(true)}
+            icon={<ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />}
+          >
+            Quality
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => setQualityOpen(true)}
-          icon={<ShieldCheck className="w-4 h-4 text-emerald-600" />}
-        >
-          Quality
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/prompts/${prompt.id}/edit`)}
+            icon={<Edit3 className="w-3.5 h-3.5" />}
+          >
+            Edit
+          </Button>
 
-        <Button
-          variant="outline"
-          onClick={() => router.push(`/prompts/${prompt.id}/edit`)}
-          icon={<Edit3 className="w-4 h-4" />}
-        >
-          Edit
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleFavorite}
+            icon={<Heart className={`w-3.5 h-3.5 ${prompt.favorite ? 'fill-red-500 text-red-500' : ''}`} />}
+          >
+            {prompt.favorite ? 'Favorited' : 'Favorite'}
+          </Button>
 
-        <Button
-          variant="ghost"
-          onClick={handleFavorite}
-          icon={<Heart className={`w-4 h-4 ${prompt.favorite ? 'fill-red-500 text-red-500' : ''}`} />}
-        >
-          {prompt.favorite ? 'Unfavorite' : 'Favorite'}
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDuplicate}
+            icon={<CopyIcon className="w-3.5 h-3.5" />}
+          >
+            Duplicate
+          </Button>
 
-        <Button variant="ghost" onClick={handleDuplicate} icon={<CopyIcon className="w-4 h-4" />}>
-          Duplicate
-        </Button>
-
-        <Button
-          variant="ghost"
-          onClick={() => setDeleteOpen(true)}
-          icon={<Trash2 className="w-4 h-4" />}
-          className="text-[var(--color-error)] hover:text-[var(--color-error)]"
-        >
-          Delete
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setDeleteOpen(true)}
+            icon={<Trash2 className="w-3.5 h-3.5" />}
+            className="text-[var(--color-error)] hover:text-[var(--color-error)]"
+          >
+            Delete
+          </Button>
+        </div>
       </div>
 
       {/* Direct AI Platform Launchers */}
-      <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
+      <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] px-3.5 sm:px-4 py-2.5 flex items-center justify-between gap-3 flex-wrap">
         <AIPlatformLauncher
           promptId={prompt.id}
           getContent={() => prompt.content}

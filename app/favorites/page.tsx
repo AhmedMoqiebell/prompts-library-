@@ -26,17 +26,19 @@ export default function FavoritesPage() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)] tracking-tight">Favorites</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">{favorites.length} {favorites.length === 1 ? 'prompt' : 'prompts'}</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">Favorites</h1>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-0.5 sm:mt-1">{favorites.length} {favorites.length === 1 ? 'prompt' : 'prompts'}</p>
         </div>
-        <Select options={SORT_OPTIONS} value={sort} onChange={(e) => setSort(e.target.value as SortOption)} />
+        <div className="w-full sm:w-48">
+          <Select options={SORT_OPTIONS} value={sort} onChange={(e) => setSort(e.target.value as SortOption)} />
+        </div>
       </div>
 
       {paginated.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 stagger-children">
             {paginated.map((p) => <PromptCard key={p.id} prompt={p} />)}
           </div>
           <div className="flex justify-center"><Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /></div>

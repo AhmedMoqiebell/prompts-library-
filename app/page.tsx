@@ -65,22 +65,22 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in">
       {/* Page header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)] tracking-tight">{t('dashboard')}</h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">{t('dashboard')}</h1>
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-0.5 sm:mt-1">
             {t('welcomeDesc')}
           </p>
         </div>
-        <Link href="/prompts/new">
+        <Link href="/prompts/new" className="self-start sm:self-auto">
           <Button icon={<Plus className="w-4 h-4" />}>{t('addPrompt')}</Button>
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 stagger-children">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 stagger-children">
         <StatCard
           title={t('totalPrompts')}
           value={stats.total}
@@ -105,21 +105,21 @@ export default function DashboardPage() {
 
       {/* Categories */}
       <div>
-        <h2 className="text-lg font-semibold text-[var(--color-text)] mb-4">{t('categories')}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 stagger-children">
+        <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)] mb-3 sm:mb-4">{t('categories')}</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-7 gap-2.5 sm:gap-3 stagger-children">
           {CATEGORIES.map((cat) => {
             const count = stats.categoryDistribution[cat.slug] ?? 0;
             return (
               <Link
                 key={cat.slug}
                 href={`/category/${cat.slug}`}
-                className="flex flex-col items-center gap-2 p-4 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-xs)] transition-all duration-150 cursor-pointer group"
+                className="flex flex-col items-center gap-2 p-3 sm:p-4 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-lg)] hover:border-[var(--color-border-strong)] hover:shadow-[var(--shadow-xs)] transition-all duration-150 cursor-pointer group"
               >
-                <div className={`w-10 h-10 rounded-[var(--radius-md)] ${cat.bgColor} flex items-center justify-center group-hover:scale-105 transition-transform`}>
+                <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-[var(--radius-md)] ${cat.bgColor} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                   <span className={cat.textColor}>
                     {(() => {
                       const IconComp = (Icons as any)[cat.icon];
-                      return IconComp ? <IconComp className="w-5 h-5" /> : null;
+                      return IconComp ? <IconComp className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : null;
                     })()}
                   </span>
                 </div>
@@ -137,16 +137,16 @@ export default function DashboardPage() {
 
       {/* Recent Prompts */}
       <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-[var(--color-text)]">{t('recentPrompts')}</h2>
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h2 className="text-base sm:text-lg font-semibold text-[var(--color-text)]">{t('recentPrompts')}</h2>
           <Link
             href="/prompts"
-            className="flex items-center gap-1 text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors"
+            className="flex items-center gap-1 text-xs sm:text-sm text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors py-1 px-1.5 rounded"
           >
             {t('viewAll')} <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 stagger-children">
           {recentPrompts.map((prompt) => (
             <PromptCard key={prompt.id} prompt={prompt} />
           ))}

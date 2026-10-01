@@ -199,44 +199,45 @@ export function ShareablePromptCardModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
       <div
-        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-2xl w-full max-h-[92vh] flex flex-col animate-scale-in overflow-hidden"
+        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-2xl w-full max-h-[90dvh] flex flex-col animate-scale-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--color-border)]">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-[var(--color-border)] shrink-0">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-accent-light)] flex items-center justify-center text-[var(--color-accent)]">
+            <div className="w-8 h-8 rounded-[var(--radius-md)] bg-[var(--color-accent-light)] flex items-center justify-center text-[var(--color-accent)] shrink-0">
               <ImageIcon className="w-4 h-4" />
             </div>
-            <div>
-              <h2 className="text-base font-semibold text-[var(--color-text)]">
+            <div className="min-w-0">
+              <h2 className="text-sm sm:text-base font-semibold text-[var(--color-text)] truncate">
                 Shareable Prompt Card
               </h2>
-              <p className="text-xs text-[var(--color-text-secondary)]">
+              <p className="text-xs text-[var(--color-text-secondary)] truncate">
                 Export an eye-catching card ready for social sharing
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-[var(--radius-sm)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer"
+            className="w-9 h-9 flex items-center justify-center rounded-[var(--radius-md)] text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer shrink-0"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Theme Picker */}
-        <div className="px-6 py-3 bg-[var(--color-bg)] border-b border-[var(--color-border-subtle)] flex items-center gap-3">
-          <span className="text-xs text-[var(--color-text-secondary)] font-medium">Style Theme:</span>
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="px-4 sm:px-6 py-2.5 sm:py-3 bg-[var(--color-bg)] border-b border-[var(--color-border-subtle)] flex items-center gap-3 overflow-x-auto no-scrollbar shrink-0">
+          <span className="text-xs text-[var(--color-text-secondary)] font-medium shrink-0">Theme:</span>
+          <div className="flex items-center gap-2 flex-nowrap">
             {THEMES.map((theme) => (
               <button
                 key={theme.id}
                 onClick={() => setSelectedTheme(theme)}
                 className={cn(
-                  'px-3 py-1 text-xs rounded-[var(--radius-md)] border font-medium transition-all cursor-pointer',
+                  'px-3 py-1 text-xs rounded-[var(--radius-md)] border font-medium transition-all cursor-pointer shrink-0',
                   selectedTheme.id === theme.id
                     ? 'border-[var(--color-accent)] text-[var(--color-accent)] bg-[var(--color-surface)] shadow-xs'
                     : 'border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text)]',
@@ -249,11 +250,11 @@ export function ShareablePromptCardModal({
         </div>
 
         {/* Card Preview */}
-        <div className="p-6 overflow-y-auto flex-1 flex items-center justify-center bg-[var(--color-bg)]">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1 flex items-center justify-center bg-[var(--color-bg)]">
           <div
             ref={cardRef}
             className={cn(
-              'w-full rounded-2xl p-6 shadow-2xl transition-all duration-300 relative border border-white/10',
+              'w-full rounded-2xl p-4 sm:p-6 shadow-2xl transition-all duration-300 relative border border-white/10',
               selectedTheme.bg,
             )}
           >
@@ -269,34 +270,35 @@ export function ShareablePromptCardModal({
               </span>
             </div>
 
-            <h3 className="text-lg font-bold text-white mb-3 line-clamp-2">
+            <h3 className="text-base sm:text-lg font-bold text-white mb-3 line-clamp-2">
               {prompt.title}
             </h3>
 
-            <div className="p-4 rounded-xl bg-black/30 border border-white/10 text-xs text-slate-200 font-sans whitespace-pre-wrap leading-relaxed max-h-48 overflow-hidden line-clamp-6">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-black/30 border border-white/10 text-xs text-slate-200 font-sans whitespace-pre-wrap leading-relaxed max-h-48 overflow-hidden line-clamp-6">
               {prompt.content}
             </div>
 
             <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-white/60">
-              <span>{prompt.tool ? `Target: ${prompt.tool}` : 'AI Prompt Library'}</span>
-              <span>v{prompt.currentVersion || 1}</span>
+              <span className="truncate">{prompt.tool ? `Target: ${prompt.tool}` : 'AI Prompt Library'}</span>
+              <span className="shrink-0 ms-2">v{prompt.currentVersion || 1}</span>
             </div>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="p-4 sm:px-6 bg-[var(--color-surface)] border-t border-[var(--color-border)] flex items-center justify-between gap-3">
+        <div className="p-3.5 sm:px-6 bg-[var(--color-surface)] border-t border-[var(--color-border)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shrink-0">
           <Button
             variant="outline"
             size="sm"
             icon={copied ? <Check className="w-3.5 h-3.5 text-[var(--color-success)]" /> : <Copy className="w-3.5 h-3.5" />}
             onClick={handleCopyText}
+            className="w-full sm:w-auto"
           >
             {copied ? 'Copied Text' : 'Copy Text'}
           </Button>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onClose}>
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+            <Button variant="ghost" size="sm" onClick={onClose} className="flex-1 sm:flex-initial">
               Close
             </Button>
             <Button
@@ -304,6 +306,7 @@ export function ShareablePromptCardModal({
               icon={<Download className="w-3.5 h-3.5" />}
               onClick={handleDownloadImage}
               loading={downloading}
+              className="flex-1 sm:flex-initial"
             >
               Download Card (PNG)
             </Button>

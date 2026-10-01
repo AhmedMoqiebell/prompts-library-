@@ -132,15 +132,15 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center pt-[12vh] p-4 bg-black/50 backdrop-blur-xs animate-fade-in"
+      className="fixed inset-0 z-50 flex items-start justify-center pt-6 sm:pt-[12vh] p-3 sm:p-4 bg-black/50 backdrop-blur-xs animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-xl w-full flex flex-col animate-scale-in overflow-hidden"
+        className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] shadow-[var(--shadow-xl)] max-w-xl w-full max-h-[85dvh] flex flex-col animate-scale-in overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-[var(--color-border)]">
+        <div className="flex items-center px-4 py-3 sm:py-3.5 border-b border-[var(--color-border)]">
           <Search className="w-5 h-5 text-[var(--color-text-tertiary)] shrink-0 me-3" />
           <input
             ref={inputRef}
@@ -151,7 +151,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
               setSelectedIndex(0);
             }}
             placeholder={t('searchPlaceholder')}
-            className="flex-1 bg-transparent text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none"
+            className="flex-1 bg-transparent text-base sm:text-sm text-[var(--color-text)] placeholder:text-[var(--color-text-tertiary)] focus:outline-none"
           />
           <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-bg)] rounded border border-[var(--color-border)]">
             ESC
@@ -159,7 +159,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         </div>
 
         {/* Results List */}
-        <div className="max-h-[60vh] overflow-y-auto p-2 space-y-4">
+        <div className="max-h-[70dvh] sm:max-h-[60vh] overflow-y-auto p-2 space-y-4">
           {/* Prompts Section */}
           {matchingPrompts.length > 0 && (
             <div>

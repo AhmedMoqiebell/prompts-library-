@@ -95,16 +95,16 @@ export default function CollectionsPage() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text)] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">
             Collections & Projects
           </h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mt-1">
+          <p className="text-xs sm:text-sm text-[var(--color-text-secondary)] mt-0.5 sm:mt-1">
             Group related prompts into projects, workflows, and custom categories
           </p>
         </div>
-        <Button icon={<Plus className="w-4 h-4" />} onClick={handleOpenCreate}>
+        <Button icon={<Plus className="w-4 h-4" />} onClick={handleOpenCreate} className="self-start sm:self-auto">
           New Collection
         </Button>
       </div>
@@ -121,9 +121,37 @@ export default function CollectionsPage() {
           }
         />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-          {/* Sidebar of collections */}
-          <div className="space-y-2 lg:sticky lg:top-24">
+        <div className="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-4 lg:gap-6 items-start">
+          {/* Mobile Horizontal Collections Bar */}
+          <div className="lg:hidden flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+            {collections.map((col) => {
+              const isSelected = activeCollection?.id === col.id;
+              return (
+                <button
+                  key={col.id}
+                  onClick={() => setSelectedColId(col.id)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-full border text-xs font-medium whitespace-nowrap shrink-0 transition-all cursor-pointer min-h-[40px]',
+                    isSelected
+                      ? 'bg-[var(--color-surface)] border-[var(--color-accent)] text-[var(--color-text)] ring-1 ring-[var(--color-accent)] shadow-xs font-semibold'
+                      : 'bg-[var(--color-surface)]/80 border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]',
+                  )}
+                >
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: col.color || '#3B82F6' }}
+                  />
+                  <span>{col.name}</span>
+                  <span className="text-[10px] text-[var(--color-text-tertiary)] bg-[var(--color-bg)] px-1.5 py-0.2 rounded-full">
+                    {col.promptIds.length}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Desktop Sidebar of collections */}
+          <div className="hidden lg:block space-y-2 lg:sticky lg:top-24">
             <div className="text-xs font-semibold text-[var(--color-text-tertiary)] uppercase tracking-wider px-2 mb-2">
               Your Collections ({collections.length})
             </div>
@@ -155,10 +183,10 @@ export default function CollectionsPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={(e) => handleOpenEdit(col, e)}
-                      className="p-1 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg)]"
+                      className="p-1.5 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg)] transition-colors"
                       title="Edit"
                     >
                       <Edit3 className="w-3.5 h-3.5" />
@@ -168,7 +196,7 @@ export default function CollectionsPage() {
                         e.stopPropagation();
                         setDeleteTargetId(col.id);
                       }}
-                      className="p-1 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-bg)]"
+                      className="p-1.5 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-bg)] transition-colors"
                       title="Delete"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -182,20 +210,42 @@ export default function CollectionsPage() {
           {/* Collection Prompts Area */}
           <div className="lg:col-span-3 space-y-4">
             {activeCollection && (
-              <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-5">
+              <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] p-4 sm:p-5">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <span
-                      className="w-4 h-4 rounded-full"
+                      className="w-4 h-4 rounded-full shrink-0"
                       style={{ backgroundColor: activeCollection.color || '#3B82F6' }}
                     />
-                    <h2 className="text-lg font-bold text-[var(--color-text)]">
+                    <h2 className="text-base sm:text-lg font-bold text-[var(--color-text)] truncate">
                       {activeCollection.name}
                     </h2>
                   </div>
-                  <span className="text-xs text-[var(--color-text-tertiary)]">
-                    {collectionPrompts.length} Prompts
-                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-[var(--color-text-tertiary)]">
+                      {collectionPrompts.length} Prompts
+                    </span>
+                    {/* Mobile Edit/Delete actions for currently active collection */}
+                    <div className="flex items-center lg:hidden gap-1">
+                      <button
+                        onClick={(e) => handleOpenEdit(activeCollection, e)}
+                        className="p-1.5 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-text)] hover:bg-[var(--color-bg)]"
+                        title="Edit collection"
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteTargetId(activeCollection.id);
+                        }}
+                        className="p-1.5 rounded text-[var(--color-text-tertiary)] hover:text-[var(--color-error)] hover:bg-[var(--color-bg)]"
+                        title="Delete collection"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 {activeCollection.description && (
                   <p className="text-xs text-[var(--color-text-secondary)] mt-1.5">
@@ -206,7 +256,7 @@ export default function CollectionsPage() {
             )}
 
             {collectionPrompts.length === 0 ? (
-              <div className="p-8 text-center bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] space-y-3">
+              <div className="p-6 sm:p-8 text-center bg-[var(--color-surface)] border border-[var(--color-border)] rounded-[var(--radius-xl)] space-y-3">
                 <Layers className="w-8 h-8 text-[var(--color-text-tertiary)] mx-auto" />
                 <h3 className="text-sm font-semibold text-[var(--color-text)]">
                   No prompts in this collection yet
@@ -221,7 +271,7 @@ export default function CollectionsPage() {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4">
                 {collectionPrompts.map((prompt) => (
                   <PromptCard key={prompt.id} prompt={prompt} />
                 ))}

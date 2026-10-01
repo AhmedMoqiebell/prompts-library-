@@ -36,29 +36,31 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
     <div className="space-y-6 animate-fade-in">
       <Breadcrumbs items={[{ label: 'Dashboard', href: '/' }, { label: category.name }]} />
 
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-[var(--radius-md)] ${category.bgColor} flex items-center justify-center`}>
+          <div className={`w-10 h-10 rounded-[var(--radius-md)] ${category.bgColor} flex items-center justify-center shrink-0`}>
             <span className={category.textColor}>{IconComp ? <IconComp className="w-5 h-5" /> : null}</span>
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[var(--color-text)] tracking-tight">{category.name}</h1>
-            <p className="text-sm text-[var(--color-text-secondary)]">{filtered.length} {filtered.length === 1 ? 'prompt' : 'prompts'}</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--color-text)] tracking-tight">{category.name}</h1>
+            <p className="text-xs sm:text-sm text-[var(--color-text-secondary)]">{filtered.length} {filtered.length === 1 ? 'prompt' : 'prompts'}</p>
           </div>
         </div>
-        <Link href="/prompts/new"><Button icon={<Plus className="w-4 h-4" />}>Add Prompt</Button></Link>
+        <Link href="/prompts/new" className="self-start sm:self-auto"><Button icon={<Plus className="w-4 h-4" />}>Add Prompt</Button></Link>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
         <div className="flex-1 max-w-md">
           <Input placeholder={`Search ${category.name.toLowerCase()}...`} value={query} onChange={(e) => { setQuery(e.target.value); setPage(1); }} iconStart={<Search className="w-4 h-4" />} />
         </div>
-        <Select options={SORT_OPTIONS} value={sort} onChange={(e) => setSort(e.target.value as SortOption)} />
+        <div className="w-full sm:w-48">
+          <Select options={SORT_OPTIONS} value={sort} onChange={(e) => setSort(e.target.value as SortOption)} />
+        </div>
       </div>
 
       {paginated.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 stagger-children">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 sm:gap-4 stagger-children">
             {paginated.map((p) => <PromptCard key={p.id} prompt={p} />)}
           </div>
           <div className="flex justify-center"><Pagination currentPage={page} totalPages={totalPages} onPageChange={setPage} /></div>

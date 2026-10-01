@@ -294,13 +294,13 @@ export default function EditPromptPage({ params }: { params: Promise<{ id: strin
           )}
         </div>
 
-        <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-subtle)]">
-          <Button variant="ghost" onClick={handleReanalyze} icon={<RotateCcw className="w-4 h-4" />}>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-[var(--color-border-subtle)] gap-3">
+          <Button variant="ghost" onClick={handleReanalyze} icon={<RotateCcw className="w-4 h-4" />} className="w-full sm:w-auto">
             Re-classify
           </Button>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={() => router.back()}>Cancel</Button>
-            <Button onClick={handleSave} icon={<Save className="w-4 h-4" />}>
+          <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+            <Button variant="outline" onClick={() => router.back()} className="flex-1 sm:flex-initial">Cancel</Button>
+            <Button onClick={handleSave} icon={<Save className="w-4 h-4" />} className="flex-1 sm:flex-initial">
               {saveAsNewVersion ? `Save as v${nextVer}` : 'Save Changes'}
             </Button>
           </div>

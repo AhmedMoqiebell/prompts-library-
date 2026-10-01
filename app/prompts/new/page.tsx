@@ -247,13 +247,14 @@ export default function NewPromptPage() {
                 onChange={(e) => setDescription(e.target.value)}
               />
 
-              <div className="flex items-center justify-between pt-2 flex-wrap gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 gap-2.5">
                 <Button
                   variant="outline"
                   size="md"
                   onClick={() => setQualityModalOpen(true)}
                   icon={<ShieldCheck className="w-4 h-4 text-emerald-600" />}
                   disabled={!content.trim()}
+                  className="w-full sm:w-auto"
                 >
                   Inspect Prompt Quality
                 </Button>
@@ -261,8 +262,9 @@ export default function NewPromptPage() {
                 <Button
                   onClick={handleAnalyze}
                   icon={<Wand2 className="w-4 h-4" />}
-                  size="lg"
+                  size="md"
                   disabled={!content.trim()}
+                  className="w-full sm:w-auto"
                 >
                   Analyze & Classify
                 </Button>
@@ -418,18 +420,20 @@ export default function NewPromptPage() {
           )}
 
           {/* Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-[var(--color-border-subtle)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-4 border-t border-[var(--color-border-subtle)] gap-2.5">
             <Button
               variant="ghost"
               onClick={() => setPhase('input')}
               icon={<RotateCcw className="w-4 h-4" />}
+              className="w-full sm:w-auto"
             >
               Analyze Again
             </Button>
             <Button
               onClick={handleSave}
               icon={<Save className="w-4 h-4" />}
-              size="lg"
+              size="md"
+              className="w-full sm:w-auto"
             >
               Save Prompt (v1)
             </Button>
